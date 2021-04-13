@@ -76,6 +76,26 @@ void loop()
     db_d = false;
   }
 
+  if(digitalRead(b_up) == LOW)
+  {
+    if(!db_u)
+    {
+      if(str_i[pos]<=0)
+      {
+        str_i[pos]= 26;
+      }
+      else
+      {
+        str_i[pos]-;
+      }
+      db_u = true;
+    }
+  }
+  else
+  {
+    db_u = false;
+  }
+
   if(db_d || db_u || db_s)
   {
     lcd.noBlink();

@@ -50,12 +50,12 @@ $Comp
 L Device:R_POT_TRIM RV1
 U 1 1 60758708
 P 1550 1400
-F 0 "RV1" V 1435 1400 50  0000 C CNN
-F 1 "contrast" V 1344 1400 50  0000 C CNN
+F 0 "RV1" V 1343 1400 50  0000 C CNN
+F 1 "contrast" V 1434 1400 50  0000 C CNN
 F 2 "Potentiometer_THT:Potentiometer_Vishay_T73YP_Vertical" H 1550 1400 50  0001 C CNN
 F 3 "~" H 1550 1400 50  0001 C CNN
 	1    1550 1400
-	0    -1   -1   0   
+	0    1    1    0   
 $EndComp
 $Comp
 L Connector:Conn_01x02_Male J2
@@ -113,7 +113,7 @@ F 3 "" H 2550 1100 50  0001 C CNN
 	1    2550 1100
 	1    0    0    -1  
 $EndComp
-Text GLabel 1600 1100 2    50   Input ~ 0
+Text GLabel 1450 1650 0    50   Input ~ 0
 Contrast
 $Comp
 L power:GND #PWR0105
@@ -306,7 +306,7 @@ Wire Wire Line
 Wire Wire Line
 	1350 1400 1400 1400
 Wire Wire Line
-	1550 1100 1600 1100
+	1450 1650 1550 1650
 Wire Wire Line
-	1550 1100 1550 1250
+	1550 1650 1550 1550
 $EndSCHEMATC

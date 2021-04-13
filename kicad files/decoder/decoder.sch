@@ -309,4 +309,26 @@ Wire Wire Line
 	1450 1650 1550 1650
 Wire Wire Line
 	1550 1650 1550 1550
+$Comp
+L Switch:SW_Push SW4
+U 1 1 6075582A
+P 3700 1250
+F 0 "SW4" H 3700 1535 50  0000 C CNN
+F 1 "line" H 3700 1444 50  0000 C CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm" H 3700 1450 50  0001 C CNN
+F 3 "~" H 3700 1450 50  0001 C CNN
+	1    3700 1250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3500 1250 3400 1250
+Wire Wire Line
+	3400 1250 3400 1650
+Connection ~ 3400 1650
+Wire Wire Line
+	4600 1850 4100 1850
+Wire Wire Line
+	4100 1850 4100 1250
+Wire Wire Line
+	3900 1250 4100 1250
 $EndSCHEMATC
