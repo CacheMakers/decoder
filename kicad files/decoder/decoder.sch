@@ -367,7 +367,7 @@ Wire Wire Line
 Wire Wire Line
 	1400 1100 1400 1400
 Connection ~ 1400 1400
-Wire Wire Line
-	1700 1150 1700 1400
 Connection ~ 1700 1400
+Wire Wire Line
+	1700 1100 1700 1400
 $EndSCHEMATC
