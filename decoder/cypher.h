@@ -4,6 +4,14 @@ char str_o[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 /*
  * This file defines the encode and decode functions for the decoder.
+ * 
+ * The str_i array represents the top line of the display
+ * The str_o array represents the bottom line of the display
+ * 0 represents a space, the numbers 1-26 represent A-Z.
+ * 
+ * Be sure that you don't leave any of the characters outside of the range
+ * 0-26, or the display will get a bunch of random symbols!
+ * 
  * If you are only planning to encode or decode, you only need one of them.
  * Unfortunately, you will need to write the two functions seperately, and
  * currently the only way to make sure that you have done both correctly
