@@ -1,27 +1,25 @@
-#include <LiquidCrystal.h>
+// ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! !
+// YOU DO NOT NEED TO CHANGE ANYTHING IN THIS FILE - ALL ENCODING AND DECODING CODE IS IN CYPHER.H
+// ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! !
 
-//#define SIMPLE_OFFSET 10
-#define SUM_MOD_OFFSET 12
+#include <LiquidCrystal.h>
+#include "cypher.h"
 
 // initialize the library by associating any needed LCD interface pin
 // with the arduino pin number it is connected to
 const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
+int b_line = 6;
 int b_up = 7;
-int b_dn = 8;
-int b_sl = 9;
+int b_down = 8;
+int b_sel = 9;
 
-bool db_u = false;
-bool db_d = false;
-bool db_s = false;
-
-bool pressed = false;
-
-char str_i[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-char str_o[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+int led = 13;
 
 int pos = 0;
+int line = 0;
+bool refresh = false;
 
 void setup() 
 {
@@ -32,75 +30,98 @@ void setup()
   lcd.clear();
   lcd.blink();
 
+  pinMode(b_line, INPUT_PULLUP);
   pinMode(b_up, INPUT_PULLUP);
-  pinMode(b_dn, INPUT_PULLUP);
-  pinMode(b_sl, INPUT_PULLUP);
+  pinMode(b_down, INPUT_PULLUP);
+  pinMode(b_sel, INPUT_PULLUP);
+
+  pinMode(led, OUTPUT);
 }
 
 void loop() 
-{
-  if(digitalRead(b_sl) == LOW)
+{  
+  // switch lines
+  if(digitalRead(b_line) == LOW)
   {
-    if(!db_s)
-    {
-      pos++;
-      if(pos >= 16)
-      {
-        pos = 0;
-      }
-      db_s = true;
-    }
-  }
-  else
-  {
-    db_s = false;  
-  }
-  
-  if(digitalRead(b_dn) == LOW)
-  {
-    if(!db_d)
-    {
-      if(str_i[pos]>=26)
-      {
-        str_i[pos]= 0;
-      }
-      else
-      {
-        str_i[pos]++;
-      }
-      db_d = true;
-    }
-  }
-  else
-  {
-    db_d = false;
+    line = (line==0)?1:0;
+    
+    while(digitalRead(b_line) == LOW);
+    refresh = true;
   }
 
+  // advance cursor
+  if(digitalRead(b_sel) == LOW)
+  {
+    if(++pos >= 16)
+    {
+      pos = 0;
+    }
+    while(digitalRead(b_sel) == LOW);
+    refresh = true;
+  }
+
+  // increment current character
   if(digitalRead(b_up) == LOW)
   {
-    if(!db_u)
+    if(line==0)
     {
-      if(str_i[pos]<=0)
+      if(++str_i[pos] > 26)
       {
-        str_i[pos]= 26;
+        str_i[pos] = 0;
       }
-      else
-      {
-        str_i[pos]-;
-      }
-      db_u = true;
     }
-  }
-  else
-  {
-    db_u = false;
+    else
+    {
+      if(++str_o[pos] > 26)
+      {
+        str_o[pos] = 0;
+      }
+    }
+    
+    while(digitalRead(b_up) == LOW);
+    refresh = true;
   }
 
-  if(db_d || db_u || db_s)
+  // decrement current character
+  if(digitalRead(b_down) == LOW)
   {
-    lcd.noBlink();
-    encode();
+    if(line==0)
+    {
+      if(--str_i[pos] < 0)
+      {
+        str_i[pos] = 26;
+      }
+    }
+    else
+    {
+      if(--str_o[pos] < 0)
+      {
+        str_o[pos] = 26;
+      }
+    }
     
+    while(digitalRead(b_down) == LOW);
+    refresh = true;
+  }
+
+  // correctly position cursor
+  lcd.setCursor(pos,line);
+
+  // update display if needed
+  if(refresh)
+  {
+    // encode or decode
+    if(line == 0)
+    {
+      f_encode();
+    }
+    else
+    {
+      f_decode();
+    }
+    
+    // print all characters
+    lcd.noBlink();
     for(int i=0; i<16; i++)
     {
       lcd.setCursor(i,0);
@@ -108,50 +129,11 @@ void loop()
       lcd.setCursor(i,1);
       lcd.print(offset(str_o[i]));
     }
-  }
-  lcd.setCursor(pos,0);
-  lcd.blink();
-}
-
-#ifdef SIMPLE_OFFSET
-void encode()
-{
-  for(int i=0; i<16; i++)
-  {
-    if(str_i[i] == 0)
-    {
-      str_o[i] = 0;
-    }
-    else
-    {
-      str_o[i] = (str_i[i]+SIMPLE_OFFSET)%26; 
-    }
+    lcd.setCursor(pos,line);
+    lcd.blink();
+    refresh = false;
   }
 }
-#endif
-
-#ifdef SUM_MOD_OFFSET
-void encode()
-{
-  int sum = 0;
-  for(int i=0; i<16; i++)
-  {
-    sum += str_i[i];
-  }
-  
-  for(int i=0; i<16; i++)
-  {
-    if(str_i[i] == 0)
-    {
-      str_o[i] = 0;
-    }
-    else
-    {
-      str_o[i] = ((str_i[i]+SUM_MOD_OFFSET)*sum)%26; 
-    }
-  }
-}
-#endif
 
 char offset(char in)
 {
