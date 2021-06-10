@@ -55,7 +55,7 @@ void f_decode()
     else                  // encode any characters
     {
       str_i[i] = str_o[i]-5;        // encode by adding five to each character
-      if(str_i[i] < 0)              // wrap around if a character exceeds 26
+      if(str_i[i] < 1)              // wrap around if a character exceeds 26
       {
         str_i[i] += 26;
       }
